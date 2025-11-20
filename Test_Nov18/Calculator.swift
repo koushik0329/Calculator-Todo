@@ -10,47 +10,40 @@ import UIKit
 class Calculator: UIViewController {
     
     let buttons = [
-        ["C", "Back", "", "/"],
+        ["AC", "", "", "/"],
         ["7", "8", "9", "*"],
         ["4", "5", "6", "-"],
         ["1", "2", "3", "+"],
-        ["", "0", ".", "="]
+        ["0", ".", "Back", "="]
     ]
     
     var currentInput : String = ""
     var currentOperation: String?
     
-    var inputTextfield : UITextField = {
-        let inputTextfield = UITextField()
-        inputTextfield.placeholder = "Enter expressions"
-        inputTextfield.translatesAutoresizingMaskIntoConstraints = false
-        return inputTextfield
-    }()
-    
     var resultField: UILabel = {
         let resultField = UILabel()
+        resultField.text = "0"
+        resultField.font = UIFont.systemFont(ofSize: 64, weight: .light)
+        resultField.textAlignment = .right
+        resultField.textColor = .black
         resultField.translatesAutoresizingMaskIntoConstraints = false
         return resultField
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         setupUI()
         createButtons()
     }
     
     func setupUI() {
-        view.addSubview(inputTextfield)
         view.addSubview(resultField)
         
         NSLayoutConstraint.activate([
-            inputTextfield.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            inputTextfield.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            inputTextfield.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            
-            resultField.topAnchor.constraint(equalTo: inputTextfield.bottomAnchor, constant: 10),
             resultField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            resultField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
+            resultField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            resultField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -430)
         ])
     }
     
@@ -64,9 +57,9 @@ class Calculator: UIViewController {
         view.addSubview(container)
         
         NSLayoutConstraint.activate([
-            container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            container.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
-            container.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+            container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            container.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            container.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             container.heightAnchor.constraint(equalToConstant: 400)
         ])
         
@@ -79,12 +72,27 @@ class Calculator: UIViewController {
             for title in row {
                 let btn = UIButton(type: .system)
                 btn.setTitle(title, for: .normal)
+                btn.titleLabel?.font = UIFont.systemFont(ofSize: 28, weight: .regular)
+                btn.layer.cornerRadius = 10
+      
+                if title.isEmpty {
+                    btn.isHidden = true
+                } else if title == "AC" || title == "Back" {
+                    btn.backgroundColor = UIColor(red: 0.85, green: 0.85, blue: 0.85, alpha: 1.0)
+                    btn.setTitleColor(.black, for: .normal)
+                } else if "/*-+=".contains(title) {
+                    btn.backgroundColor = UIColor(red: 1.0, green: 0.58, blue: 0.0, alpha: 1.0)
+                    btn.setTitleColor(.white, for: .normal)
+                } else {
+                    btn.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.0)
+                    btn.setTitleColor(.black, for: .normal)
+                }
+                
                 btn.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
                 
                 rowStack.addArrangedSubview(btn)
             }
             container.addArrangedSubview(rowStack)
-
         }
     }
     
@@ -97,16 +105,15 @@ class Calculator: UIViewController {
     
     func inputOperation(_ operators: String) {
         switch operators {
-        case "C" :
+        case "AC" :
             currentInput = ""
             currentOperation = nil
-            inputTextfield.text = "0"
             resultField.text = "0"
             
         case "Back" :
             if !currentInput.isEmpty {
                 currentInput.removeLast()
-                inputTextfield.text = currentInput.isEmpty ? "0" : currentInput
+                resultField.text = currentInput.isEmpty ? "0" : currentInput
             }
         case "=" :
             calculateResult()
@@ -117,11 +124,11 @@ class Calculator: UIViewController {
             }
             currentOperation = operators
             currentInput += operators
-            inputTextfield.text = currentInput
+            resultField.text = currentInput
             
         default:
             currentInput += operators
-            inputTextfield.text = currentInput
+            resultField.text = currentInput
         }
     }
     
@@ -149,8 +156,4 @@ class Calculator: UIViewController {
         currentInput = "\(result)"
         currentOperation = nil
     }
-
-
-
 }
-

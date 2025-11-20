@@ -1,36 +1,146 @@
-//
-//  Test_Nov18Tests.swift
-//  Test_Nov18Tests
-//
-//  Created by Koushik Reddy Kambham on 11/18/25.
-//
-
 import XCTest
 @testable import Test_Nov18
 
-final class Test_Nov18Tests: XCTestCase {
+class CalculatorTests: XCTestCase {
+    
+    var calculator: Calculator!
+    
+    override func setUp() {
+        super.setUp()
+        calculator = Calculator()
+        calculator.loadViewIfNeeded()
+    }
+    
+    override func tearDown() {
+        calculator = nil
+        super.tearDown()
+    }
+    
+    // MARK: - Addition Tests
+    
+    func testAdditionPositiveNumbers() {
+        // Test: 5 + 3 = 8
+        calculator.inputOperation("5")
+        calculator.inputOperation("+")
+        calculator.inputOperation("3")
+        calculator.inputOperation("=")
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        XCTAssertEqual(calculator.resultField.text, "8")
+    }
+    
+    func testAdditionDecimals() {
+        // Test: 2.5 + 3.5 = 6
+        calculator.inputOperation("2")
+        calculator.inputOperation(".")
+        calculator.inputOperation("5")
+        calculator.inputOperation("+")
+        calculator.inputOperation("3")
+        calculator.inputOperation(".")
+        calculator.inputOperation("5")
+        calculator.inputOperation("=")
+        
+        XCTAssertEqual(calculator.resultField.text, "6")
+    }
+    
+    // MARK: - Subtraction Tests
+    
+    func testSubtractionPositiveResult() {
+        // Test: 10 - 4 = 6
+        calculator.inputOperation("1")
+        calculator.inputOperation("0")
+        calculator.inputOperation("-")
+        calculator.inputOperation("4")
+        calculator.inputOperation("=")
+        
+        XCTAssertEqual(calculator.resultField.text, "6")
+    }
+  
+    func testSubtractionDecimals() {
+        // Test: 7.5 - 2.5 = 5
+        calculator.inputOperation("7")
+        calculator.inputOperation(".")
+        calculator.inputOperation("5")
+        calculator.inputOperation("-")
+        calculator.inputOperation("2")
+        calculator.inputOperation(".")
+        calculator.inputOperation("5")
+        calculator.inputOperation("=")
+        
+        XCTAssertEqual(calculator.resultField.text, "5")
+    }
+    
+    // MARK: - Multiplication Tests
+    
+    func testMultiplicationPositiveNumbers() {
+        // Test: 6 * 7 = 42
+        calculator.inputOperation("6")
+        calculator.inputOperation("*")
+        calculator.inputOperation("7")
+        calculator.inputOperation("=")
+        
+        XCTAssertEqual(calculator.resultField.text, "42")
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func testMultiplicationDecimals() {
+        // Test: 2.5 * 4 = 10
+        calculator.inputOperation("2")
+        calculator.inputOperation(".")
+        calculator.inputOperation("5")
+        calculator.inputOperation("*")
+        calculator.inputOperation("4")
+        calculator.inputOperation("=")
+        
+        XCTAssertEqual(calculator.resultField.text, "10")
     }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    
+    // MARK: - Division Tests
+    
+    func testDivisionWholeNumber() {
+        // Test: 20 / 4 = 5
+        calculator.inputOperation("2")
+        calculator.inputOperation("0")
+        calculator.inputOperation("/")
+        calculator.inputOperation("4")
+        calculator.inputOperation("=")
+        
+        XCTAssertEqual(calculator.resultField.text, "5")
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testDivisionDecimals() {
+        // Test: 7.5 / 2.5 = 3
+        calculator.inputOperation("7")
+        calculator.inputOperation(".")
+        calculator.inputOperation("5")
+        calculator.inputOperation("/")
+        calculator.inputOperation("2")
+        calculator.inputOperation(".")
+        calculator.inputOperation("5")
+        calculator.inputOperation("=")
+        
+        XCTAssertEqual(calculator.resultField.text, "3")
+    }
+    
+    // MARK: - Clear and Back Tests
+    
+    func testClearButton() {
+        // Test: Enter numbers then clear
+        calculator.inputOperation("1")
+        calculator.inputOperation("2")
+        calculator.inputOperation("3")
+        calculator.inputOperation("AC")
+        
+        XCTAssertEqual(calculator.resultField.text, "0")
+    }
+    
+    func testBackButton() {
+        // Test: Enter 123, result 12
+        calculator.inputOperation("1")
+        calculator.inputOperation("2")
+        calculator.inputOperation("3")
+        calculator.inputOperation("Back")
+        
+        XCTAssertEqual(calculator.resultField.text, "12")
     }
 
 }
+
